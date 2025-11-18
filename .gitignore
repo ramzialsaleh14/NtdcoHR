@@ -10,5 +10,12 @@ npm-debug.*
 *.orig.*
 web-build/
 
+# Native folders (use CNG/Prebuild)
+android/
+ios/
+
 # macOS
 .DS_Store
+
+# Firebase admin/credentials (don't commit service account keys)
+app/*firebase-adminsdk*.json
