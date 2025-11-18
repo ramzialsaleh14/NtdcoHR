@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "807089270431",
+    "project_id": "ntdcohr",
+    "storage_bucket": "ntdcohr.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:807089270431:android:8e2955dbc4dba6ceb63caa",
+        "android_client_info": {
+          "package_name": "com.puresoft.ntdcoHR"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "807089270431-hpsdcl2nb2drppo8br5u0j5tflfde0fk.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB3bbAKxFBeL9xsd14Ovn6cxO-4kSydiTQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "807089270431-8eb4kl2gr78dmbo1ll1k6kr7k0hs6fe0.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

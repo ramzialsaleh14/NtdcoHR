@@ -1,32 +1,83 @@
 {
   "expo": {
-    "name": "JamilOdehHRApp",
-    "slug": "JamilOdehHRApp",
-    "version": "1.0.0",
+    "name": "NtdcoHR",
+    "slug": "ntdcohr",
+    "version": "2.0.1",
     "orientation": "portrait",
-    "icon": "./assets/icon.png",
+    "icon": "./assets/logo.png",
     "splash": {
-      "image": "./assets/splash.png",
+      "image": "./assets/logo.png",
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
     "updates": {
-      "fallbackToCacheTimeout": 0
+      "fallbackToCacheTimeout": 0,
+      "enabled": true,
+      "url": "https://u.expo.dev/a8ed03f5-f3ca-42f7-83e7-bf999d1c2aad"
     },
-    "assetBundlePatterns": [
-      "**/*"
-    ],
+    "assetBundlePatterns": ["**/*"],
     "ios": {
-      "supportsTablet": true
+      "bundleIdentifier": "com.puresoft.ntdcoHR",
+      "supportsTablet": true,
+      "infoPlist": {
+        "NSCameraUsageDescription": "This app needs access to camera to take photos for attachments.",
+        "NSPhotoLibraryUsageDescription": "This app needs access to photo library to select images for attachments.",
+        "NSMicrophoneUsageDescription": "This app needs access to microphone to record audio attachments."
+      }
     },
     "android": {
+      "package": "com.puresoft.ntdcoHR",
+      "versionCode": 2,
+      "googleServicesFile": "./app/google-services.json",
       "adaptiveIcon": {
-        "foregroundImage": "./assets/adaptive-icon.png",
+        "foregroundImage": "./assets/logo.png",
         "backgroundColor": "#FFFFFF"
-      }
+      },
+      "permissions": [
+        "READ_EXTERNAL_STORAGE",
+        "WRITE_EXTERNAL_STORAGE",
+        "MEDIA_LIBRARY",
+        "NOTIFICATIONS",
+        "ACCESS_COARSE_LOCATION",
+        "ACCESS_FINE_LOCATION",
+        "RECEIVE_BOOT_COMPLETED",
+        "VIBRATE",
+        "WAKE_LOCK",
+        "com.google.android.c2dm.permission.RECEIVE"
+      ]
     },
     "web": {
       "favicon": "./assets/favicon.png"
-    }
+    },
+    "description": "",
+    "runtimeVersion": "exposdk:54.0.0",
+    "extra": {
+      "eas": {
+        "projectId": "a8ed03f5-f3ca-42f7-83e7-bf999d1c2aad"
+      }
+    },
+    "plugins": [
+      "expo-localization",
+      "expo-secure-store",
+      "expo-asset",
+      [
+        "expo-build-properties",
+        {
+          "android": {
+            "usesCleartextTraffic": true
+          }
+        }
+      ],
+      "expo-font",
+      [
+        "expo-notifications",
+        {
+          "icon": "./assets/icon.png",
+          "color": "#ffffff",
+          "defaultChannel": "default",
+          "sounds": []
+        }
+      ]
+    ]
   }
 }
