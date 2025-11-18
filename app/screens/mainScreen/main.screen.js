@@ -368,8 +368,10 @@ export default function MainScreen() {
   const [pickerValHrChecks, setPickerValHrChecks] = useState("All");
   const [myReqsStatusPickerVal, setMyReqsStatusPickerVal] = useState("Pending");
   const [viewReqsStatusPickerVal, setViewReqsStatusPickerVal] = useState("Pending");
-  const [reqTypePickerVal, setReqTypePickerVal] = useState("1");
-  const [myReqsTypePickerVal, setMyReqsTypePickerVal] = useState("1");
+  // Default to leaves (matching reqTypeHrPickerVal values)
+  const [reqTypePickerVal, setReqTypePickerVal] = useState("leaves");
+  // Default to leaves - use same string keys as other reqType pickers
+  const [myReqsTypePickerVal, setMyReqsTypePickerVal] = useState("leaves");
   const [reqTypeHrPickerVal, setReqTypeHrPickerVal] = useState("leaves");
   const [typePickerVal, setTypePickerVal] = useState("رسمية");
   const [lateCheckPickerVal, setlateCheckPickerVal] = useState("");
@@ -2481,6 +2483,30 @@ export default function MainScreen() {
               <Picker.Item label="Denied" value="Denied" />
             </Picker>
           </View>
+          <View
+            style={{
+              flexDirection: "row",
+              padding: 10,
+              justifyContent: "space-between",
+            }}
+          >
+            <Text style={{ fontSize: 17, marginTop: 15 }}>
+              {i18n.t("reqType")}
+            </Text>
+            <Picker
+              selectedValue={reqTypePickerVal}
+              onValueChange={(itemValue) => setReqTypePickerVal(itemValue)}
+              style={{ width: 160 }}
+              containerStyle={{ width: 160 }}
+              dropDownContainerStyle={{ width: 160 }}
+              zIndex={5900}
+              zIndexInverse={600}
+            >
+              <Picker.Item label="اجازات ومغادرات" value="leaves" />
+              {/* <Picker.Item label="سلف" value="loans" /> */}
+              <Picker.Item label="ادارية" value="admin" />
+            </Picker>
+          </View>
         </View>
         <AppButton
           style={styles.appButton}
@@ -2490,12 +2516,30 @@ export default function MainScreen() {
               Commons.okAlert(i18n.t("error"), "يوجد خطأ في ادخال التاريخ");
               return;
             }
-            navigation.navigate(i18n.t("requests"), {
-              fromDate: fromDateTextViewReqs,
-              toDate: toDateTextViewReqs,
-              userNoKey: userNoTextViewReqs,
-              statusKey: viewReqsStatusPickerVal,
-            });
+            if (reqTypePickerVal == "leaves") {
+              navigation.navigate(i18n.t("requests"), {
+                fromDate: fromDateTextViewReqs,
+                toDate: toDateTextViewReqs,
+                userNoKey: userNoTextViewReqs,
+                statusKey: viewReqsStatusPickerVal,
+              });
+            }
+            if (reqTypePickerVal == "loans") {
+              navigation.navigate(i18n.t("loanRequests"), {
+                fromDate: fromDateTextViewReqs,
+                toDate: toDateTextViewReqs,
+                userNoKey: userNoTextViewReqs,
+                statusKey: viewReqsStatusPickerVal,
+              });
+            }
+            if (reqTypePickerVal == "admin") {
+              navigation.navigate(i18n.t("adminRequests"), {
+                fromDate: fromDateTextViewReqs,
+                toDate: toDateTextViewReqs,
+                userNoKey: userNoTextViewReqs,
+                statusKey: viewReqsStatusPickerVal,
+              });
+            }
           }}
         >
           {i18n.t("show")}
@@ -2661,9 +2705,9 @@ export default function MainScreen() {
               zIndex={5900}
               zIndexInverse={800}
             >
-              <Picker.Item label="اجازات ومغادرات" value="1" />
-              {/* <Picker.Item label="سلف" value="2" /> */}
-              <Picker.Item label="ادارية" value="3" />
+              <Picker.Item label="اجازات ومغادرات" value="leaves" />
+              {/* <Picker.Item label="سلف" value="loans" /> */}
+              <Picker.Item label="ادارية" value="admin" />
             </Picker>
           </View>
         </View>
@@ -2675,21 +2719,21 @@ export default function MainScreen() {
               Commons.okAlert(i18n.t("error"), "يوجد خطأ في ادخال التاريخ");
               return;
             }
-            if (myReqsTypePickerVal == 1) {
+            if (myReqsTypePickerVal == "leaves") {
               navigation.navigate(i18n.t("myLeaves"), {
                 fromDate: fromDateTextMyReqs,
                 toDate: toDateTextMyReqs,
                 status: myReqsStatusPickerVal,
               });
             }
-            if (myReqsTypePickerVal == 2) {
+            if (myReqsTypePickerVal == "loans") {
               navigation.navigate(i18n.t("myLoans"), {
                 fromDate: fromDateTextMyReqs,
                 toDate: toDateTextMyReqs,
                 status: myReqsStatusPickerVal,
               });
             }
-            if (myReqsTypePickerVal == 3) {
+            if (myReqsTypePickerVal == "admin") {
               navigation.navigate(i18n.t("myAdminReqs"), {
                 fromDate: fromDateTextMyReqs,
                 toDate: toDateTextMyReqs,
