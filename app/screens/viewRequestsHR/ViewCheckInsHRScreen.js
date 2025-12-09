@@ -97,6 +97,7 @@ export default function ViewCheckInsHrScreen({ route }) {
       const excelData = requests.map((item) => ({
         [i18n.t("empName") || "اسم الموظف"]: item.empName || "",
         [i18n.t("date") || "التاريخ"]: item.date || "",
+        [i18n.t("location") || "الموقع"]: item.address || "",
         [i18n.t("timeIn") || "وقت الدخول"]: item.timeIn || "",
         [i18n.t("timeOut") || "وقت الخروج"]: item.timeOut || "",
         [i18n.t("vacation") || "اجازة"]: item.vac || "",
@@ -178,6 +179,7 @@ export default function ViewCheckInsHrScreen({ route }) {
               <tr>
                 <th>اسم الموظف</th>
                 <th>التاريخ</th>
+                <th>الموقع</th>
                 <th>وقت الدخول</th>
                 <th>وقت الخروج</th>
                 <th>اجازة</th>
@@ -197,6 +199,7 @@ export default function ViewCheckInsHrScreen({ route }) {
           <tr>
             <td>${item.empName || ""}</td>
             <td>${item.date || ""}</td>
+            <td>${item.address || ""}</td>
             <td>${item.timeIn || ""}</td>
             <td>${item.timeOut || ""}</td>
             <td>${item.vac || ""}</td>
@@ -426,6 +429,12 @@ export default function ViewCheckInsHrScreen({ route }) {
                   <Text style={styles.textItemsStyle}>
                     {" "}
                     {i18n.t("date")} {":"} {item.date}{" "}
+                  </Text>
+                ) : null}
+
+                {!!(item.address !== "" && item.address != null) ? (
+                  <Text style={styles.textItemsStyle}>
+                    {i18n.t("location")} {": "} {item.address}
                   </Text>
                 ) : null}
                 {!!(item.timeIn !== "") ? (
