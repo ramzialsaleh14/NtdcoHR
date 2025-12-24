@@ -1,7 +1,7 @@
 import { Platform } from "react-native";
 // Urls
 // ********* DON'T FORGET TO UPDATE VERSION ON WEBSERVICE *********
-export const appVersion = "v1.8.5"; // ********* DON'T FORGET TO UPDATE VERSION ON WEBSERVICE *********
+export const appVersion = "v1.8.8"; // ********* DON'T FORGET TO UPDATE VERSION ON WEBSERVICE *********
 // ********* DON'T FORGET TO UPDATE VERSION ON WEBSERVICE *********
 export const serverBaseUrl = "http://ntdco.ddns.net";
 //export const serverBaseUrl = "http://192.168.1.231:8080";

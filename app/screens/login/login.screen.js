@@ -58,7 +58,7 @@ export default function LoginScreen() {
             await Commons.saveToAS("userID", userNoStorage);
             await Commons.saveToAS("password", passwordStorage);
             await Commons.saveToAS("curName", resp.name);
-
+            await Commons.saveToAS("isHr", resp.isHr);
             const isHr = resp.isHr === "Y";
             const isManager = resp.isManager === true || resp.isManager === "true";
             navigation.navigate("Main", { isHr, isManager });

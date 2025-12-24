@@ -114,6 +114,7 @@ export default function MainScreen() {
     setUserToken(devId);
     const userID = await Commons.getFromAS("userID");
     const curDevId = await Commons.getFromAS("devId");
+    const expoPushToken = await Commons.getFromAS("expoPushToken");
     if (curDevId == null) {
       registerForPushNotificationsAsync().then((token) => {
         console.log(token);
@@ -146,6 +147,8 @@ export default function MainScreen() {
     const resp = await ServerOperations.sendUserToken(userID, token, devId);
     if (resp.res == "ok") {
       await Commons.saveToAS("devId", devId);
+      await Commons.saveToAS("expoPushToken", token);
+
     } else if (resp.res == "exists") {
       Commons.okAlert("", i18n.t("tokenNotRegistered"));
       await Commons.removeFromAS("userID");
@@ -1091,7 +1094,7 @@ export default function MainScreen() {
         }
       } else {
         console.log("Location check failed - not near company building");
-        Commons.okAlert("يرجى التواجد قرب مبنى الشركة");
+        Commons.okAlert("يرجى التواجد قرب الموقع");
       }
     } catch (error) {
       console.log("onCheckInPress error:", error);
@@ -1233,7 +1236,7 @@ export default function MainScreen() {
         }
       } else {
         console.log("Location check failed - not near company building");
-        Commons.okAlert("يرجى التواجد قرب مبنى الشركة");
+        Commons.okAlert("يرجى التواجد قرب الموقع");
       }
     } catch (error) {
       console.log("onCheckOutPress error:", error);
@@ -3008,7 +3011,41 @@ export default function MainScreen() {
   // Main component return
   return (
     <SafeAreaView style={styles.view}>
-      {/* <Text style={{alignSelf:"center",position:'absolute',top:"3%"}}>اهلا {curName}</Text> */}
+      {/* Welcome Message */}
+      {curName && curUser && (
+        <View style={{
+          alignSelf: "center",
+          position: 'absolute',
+          top: "3%",
+          zIndex: 1,
+          backgroundColor: 'rgba(255, 255, 255, 0.9)',
+          paddingHorizontal: 20,
+          paddingVertical: 10,
+          borderRadius: 8,
+          shadowColor: "#000",
+          shadowOffset: { width: 0, height: 2 },
+          shadowOpacity: 0.1,
+          shadowRadius: 4,
+          elevation: 3,
+        }}>
+          <Text style={{
+            fontSize: 18,
+            fontWeight: 'bold',
+            color: 'rgb(1,135,134)',
+            textAlign: 'center',
+          }}>
+            اهلا {curName}
+          </Text>
+          <Text style={{
+            fontSize: 14,
+            color: '#666',
+            textAlign: 'center',
+            marginTop: 4,
+          }}>
+            {curUser}
+          </Text>
+        </View>
+      )}
       <ProgressDialog
         visible={progressDialogVisible}
         title="جاري التحميل..."

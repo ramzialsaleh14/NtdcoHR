@@ -434,7 +434,7 @@ export default function ViewCheckInsHrScreen({ route }) {
 
                 {!!(item.address !== "" && item.address != null) ? (
                   <Text style={styles.textItemsStyle}>
-                    {i18n.t("location")} {": "} {item.address}
+                    {i18n.t("checkInlocation")} {": "} {item.address}
                   </Text>
                 ) : null}
                 {!!(item.timeIn !== "") ? (
