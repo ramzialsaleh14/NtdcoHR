@@ -98,6 +98,8 @@ export default {
   timeOut: "Exit Time",
   vacation: "Vacation",
   leave: "Leave",
+  selectEmployee: "Select Employee",
+  employee: "Employee",
   absent: "Absent",
   camera: "Camera",
   takePicture: "Take Picture",
@@ -115,4 +117,5 @@ export default {
   updated: "Updated",
   empName: "Employee Name",
   exportedFiles: "Exported Files",
+  checkInlocation: "Location"
 };

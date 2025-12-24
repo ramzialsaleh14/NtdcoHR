@@ -20,6 +20,7 @@ import {
   Dimensions,
   TextInput as RNTextInput,
   Modal as RNModal,
+  FlatList,
 } from "react-native";
 import Picker from "../../components/DropdownPickerWrapper";
 import { Card, TextInput, Modal, Portal } from "react-native-paper";
@@ -93,6 +94,14 @@ const TakeALeaveScreen = () => {
   const [carNo, setCarNo] = useState("");
   const [notes, setNotes] = useState("");
   const [leaveTypes, setLeaveTypes] = useState([]);
+  const [isHR, setIsHR] = useState(false);
+  const [employees, setEmployees] = useState([]);
+  const [filteredEmployees, setFilteredEmployees] = useState([]);
+  const [selectedEmployeeId, setSelectedEmployeeId] = useState(null);
+  const [selectedEmployeeName, setSelectedEmployeeName] = useState("");
+  const [showSelectEmployeeModal, setShowSelectEmployeeModal] = useState(false);
+  const [searchText, setSearchText] = useState("");
+  const [loadingEmployees, setLoadingEmployees] = useState(false);
   //components to show
   const [selectedValue1st, setSelectedValue1st] = useState("");
   const [selectedValue2nd, setSelectedValue2nd] = useState("");
@@ -165,6 +174,11 @@ const TakeALeaveScreen = () => {
       try {
         // Get user ID for shift lookup
         const userID = await Commons.getFromAS("userID");
+        const isHrValue = await Commons.getFromAS("isHr");
+
+        // Check if user is HR
+        const hrStatus = isHrValue === "Y";
+        setIsHR(hrStatus);
 
         // Fetch leave types
         const leaveTypesData = await ServerOperations.getLeaveTypes();
@@ -187,6 +201,25 @@ const TakeALeaveScreen = () => {
         }
         setLeaveTypes(leaveTypesData);
 
+        // Fetch employees list if HR
+        if (hrStatus) {
+          try {
+            setLoadingEmployees(true);
+            const employeesData = await ServerOperations.getNamesList();
+            if (employeesData && employeesData.length > 0) {
+              setEmployees(employeesData);
+              setFilteredEmployees(employeesData);
+              // Set first employee as default
+              setSelectedEmployeeId(employeesData[0].id);
+              setSelectedEmployeeName(employeesData[0].name);
+            }
+          } catch (error) {
+            console.error("Error fetching employees list:", error);
+          } finally {
+            setLoadingEmployees(false);
+          }
+        }
+
         // Fetch employee shift times
         if (userID) {
           const shiftData = await ServerOperations.getEmpShift(userID);
@@ -206,9 +239,30 @@ const TakeALeaveScreen = () => {
 
 
 
+  const handleSearch = (text) => {
+    setSearchText(text);
+    if (text) {
+      const newData = employees.filter((item) => {
+        const itemDataId = item.id
+          ? item.id.toUpperCase()
+          : "".toUpperCase();
+        const itemData = item.name
+          ? item.name.toUpperCase()
+          : "".toUpperCase();
+        const textData = text.toUpperCase();
+        return itemData.indexOf(textData) > -1 || itemDataId.indexOf(textData) > -1;
+      });
+      setFilteredEmployees(newData);
+    } else {
+      setFilteredEmployees(employees);
+    }
+  };
+
   const submitRequest = async () => {
     //getUserID();
-    const userID = await Commons.getFromAS("userID");
+    const loggedInUserID = await Commons.getFromAS("userID");
+    // Use selected employee ID if HR, otherwise use logged-in user ID
+    const userID = isHR && selectedEmployeeId ? selectedEmployeeId : loggedInUserID;
     let person = "";
     if (selectedValue1st === "") {
       person = selectedValue2nd;
@@ -857,7 +911,7 @@ const TakeALeaveScreen = () => {
                   testID="fromDatePicker"
                   value={tempFromDate}
                   mode="date"
-                  minimumDate={new Date()}
+                  minimumDate={isHR ? undefined : new Date()}
                   display="spinner"
                   themeVariant="light"
                   onChange={onChangeFromDate}
@@ -879,7 +933,7 @@ const TakeALeaveScreen = () => {
             testID="fromDatePicker"
             value={fromDate}
             mode="date"
-            minimumDate={new Date()}
+            minimumDate={isHR ? undefined : new Date()}
             display="default"
             themeVariant="light"
             onChange={onChangeFromDate}
@@ -904,7 +958,7 @@ const TakeALeaveScreen = () => {
                   mode="date"
                   display="spinner"
                   themeVariant="light"
-                  minimumDate={new Date()}
+                  minimumDate={isHR ? undefined : new Date()}
                   onChange={onChangeToDate}
                 />
                 <AppButton
@@ -926,7 +980,7 @@ const TakeALeaveScreen = () => {
             mode="date"
             display="default"
             themeVariant="light"
-            minimumDate={new Date()}
+            minimumDate={isHR ? undefined : new Date()}
             onChange={onChangeToDate}
           />
         )
@@ -1021,6 +1075,70 @@ const TakeALeaveScreen = () => {
           />
         )
       )}
+
+      {isHR && (
+        <View style={styles.employeeContainer}>
+          <Text style={styles.employeeLabel}>{i18n.t("employee")}</Text>
+          <TouchableOpacity
+            style={styles.employeeInput}
+            onPress={() => setShowSelectEmployeeModal(true)}
+            disabled={loadingEmployees}
+          >
+            <Text style={styles.employeeInputText}>
+              {loadingEmployees ? "جاري التحميل..." : (selectedEmployeeName || i18n.t("selectEmployee"))}
+            </Text>
+          </TouchableOpacity>
+        </View>
+      )}
+
+      <Portal>
+        <Modal
+          visible={showSelectEmployeeModal}
+          onDismiss={() => setShowSelectEmployeeModal(false)}
+          contentContainerStyle={styles.modalStyle}
+        >
+          <Text style={styles.modalLabel}>{i18n.t("selectEmployee")}</Text>
+          <RNTextInput
+            placeholder="Search"
+            clearButtonMode="always"
+            style={styles.searchBox}
+            value={searchText}
+            onChangeText={handleSearch}
+          />
+          <FlatList
+            keyExtractor={(item) => item.id}
+            data={filteredEmployees}
+            extraData={filteredEmployees}
+            renderItem={({ item }) => (
+              <View>
+                <TouchableOpacity
+                  onPress={() => {
+                    setSelectedEmployeeId(item.id);
+                    setSelectedEmployeeName(item.name);
+                    setShowSelectEmployeeModal(false);
+                    setSearchText("");
+                  }}
+                >
+                  <View
+                    style={{
+                      flexDirection: "row",
+                      padding: 15,
+                      borderWidth: 1,
+                      borderColor: "#ddd",
+                      backgroundColor: "#fff",
+                    }}
+                  >
+                    <Text style={{ marginRight: 20, color: "red" }}>
+                      {item.id}
+                    </Text>
+                    <Text>{item.name}</Text>
+                  </View>
+                </TouchableOpacity>
+              </View>
+            )}
+          />
+        </Modal>
+      </Portal>
 
       <Picker
         selectedValue={selectedValue}
@@ -1325,6 +1443,45 @@ const styles = StyleSheet.create({
   modalStyle: {
     backgroundColor: "white",
     padding: 30,
+    margin: 20,
+    borderRadius: 10,
+    maxHeight: "80%",
+  },
+  modalLabel: {
+    fontSize: 18,
+    fontWeight: "bold",
+    marginBottom: 15,
+    color: "#333",
+    textAlign: "center",
+  },
+  inputLabel: {
+    fontSize: 14,
+    color: "#333",
+    marginBottom: 5,
+    fontWeight: "500",
+  },
+  employeeContainer: {
+    marginBottom: 15,
+  },
+  employeeLabel: {
+    fontSize: 16,
+    color: "rgb(1,135,134)",
+    marginBottom: 8,
+    fontWeight: "600",
+    textAlign: "center",
+  },
+  employeeInput: {
+    borderWidth: 1,
+    borderColor: "#ddd",
+    borderRadius: 4,
+    padding: 12,
+    backgroundColor: "#fff",
+    minHeight: 48,
+    justifyContent: "center",
+  },
+  employeeInputText: {
+    fontSize: 16,
+    color: "#000",
   },
   modalOverlay: {
     flex: 1,
@@ -1355,6 +1512,16 @@ const styles = StyleSheet.create({
     backgroundColor: "rgb(1,135,134)",
     marginTop: 20,
     width: 120,
+  },
+  searchBox: {
+    borderColor: "#ccc",
+    borderWidth: 1,
+    borderRadius: 8,
+    marginBottom: 10,
+    padding: 12,
+    fontSize: 16,
+    backgroundColor: "#fff",
+    color: "#000",
   },
 });
 

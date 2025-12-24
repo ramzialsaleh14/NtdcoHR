@@ -98,6 +98,8 @@ export default {
   timeOut: "وقت الخروج",
   vacation: "اجازة",
   leave: "مغادرة",
+  selectEmployee: "اختر الموظف",
+  employee: "الموظف",
   absent: "غياب",
   camera: "كاميرا",
   takePicture: "اخذ صورة",
@@ -118,4 +120,6 @@ export default {
   updated: "محدث",
   empName: "اسم الموظف",
   exportedFiles: "الملفات المصدرة",
+  checkInlocation: "الموقع"
+
 };
