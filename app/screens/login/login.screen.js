@@ -91,6 +91,7 @@ export default function LoginScreen() {
         await Commons.saveToAS("userID", userNo);
         await Commons.saveToAS("password", password);
         await Commons.saveToAS("curName", resp.name);
+        await Commons.saveToAS("isHr", resp.isHr);
 
         const isHr = resp.isHr === "Y";
         const isManager = resp.isManager === true || resp.isManager === "true";

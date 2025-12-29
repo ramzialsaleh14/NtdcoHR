@@ -1187,8 +1187,8 @@ const TakeALeaveScreen = () => {
           <Picker.Item key={l.id} label={l.desc} value={l.id} />
         ))}
       </Picker>
-      <Card>
-        <Card.Content>
+      <Card style={{ flex: 1 }}>
+        <Card.Content style={{ flex: 1 }}>
           <ScrollView keyboardShouldPersistTaps="handled">
             {!!isEjazeh && (
               <SafeAreaView>
@@ -1435,6 +1435,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#fff",
   },
   container: {
+    flex: 1,
     width: "100%",
     backgroundColor: "#FAF9F6",
     paddingTop: 40,
